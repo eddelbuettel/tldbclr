@@ -1,0 +1,18 @@
+Package: tiledbcloud
+Type: Package
+Title: TileDB Cloud Platform R Client Package
+Version: 0.0.1.2
+Author: TileDB, Inc.
+Copyright: TileDB, Inc.
+Maintainer: Dirk Eddelbuettel <dirk@tiledb.com>
+Description: The TileDB Cloud Platform API Client Package offers
+ access to the TileDB Cloud service.
+URL: https://github.com/TileDB-Inc/TileDB-Cloud-R
+BugReports: https://github.com/TileDB-Inc/TileDB-Cloud-R/issues
+Depends: R (>= 3.3)
+License: MIT + file LICENSE
+LazyData: true
+Imports: jsonlite, httr, R6, base64enc
+Suggests: tinytest
+RoxygenNote: 7.1.1
+Encoding: UTF-8
