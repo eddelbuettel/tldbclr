@@ -1,0 +1,3 @@
+steps:
+  - bash: mkdir -vp "${HOME}/.tiledb"
+    displayName: 'Set up .tiledb'

@@ -24,7 +24,7 @@ before_install:
   # decrypt the file tests/cloud.json.enc file, cf https://docs.travis-ci.com/user/encrypting-files/
   # condition this on have secure environment variables which PRs off forks do not
   # cf https://docs.travis-ci.com/user/environment-variables/
-  - if [[ "${TRAVIS_SECURE_ENV_VARS}" == "true" ]]; then mkdir ~/.tiledb; openssl aes-256-cbc -K $encrypted_8fb10d0bb40b_key -iv $encrypted_8fb10d0bb40b_iv -in tests/cloud.json.enc -out ~/.tiledb/cloud.json -d; fi
+  - if [[ "${TRAVIS_SECURE_ENV_VARS}" == "true" ]]; then mkdir ~/.tiledb; openssl aes-256-cbc -K $encrypted_8fb10d0bb40b_key -iv $encrypted_8fb10d0bb40b_iv -in tests/cloud.json.enc.travis -out ~/.tiledb/cloud.json -d; fi
   
 install:
   - ./run.sh install_aptget r-cran-jsonlite r-cran-httr r-cran-r6 r-cran-base64enc r-cran-tinytest

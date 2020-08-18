@@ -1,0 +1,7 @@
+steps:
+  - bash: |
+      mkdir -vp "${HOME}"/.tiledb
+      cp -vax $(R_LIBS_USER)/cloud.json "${HOME}"/.tiledb
+      ls -l "${HOME}/.tiledb"
+      echo "${HOME}"
+    displayName: 'Check cloud.json'

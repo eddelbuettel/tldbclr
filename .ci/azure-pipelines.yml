@@ -20,6 +20,9 @@ jobs:
       - script: sudo apt-get update && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev
         displayName: 'Install system requirements'
       - template: azure/set-up-library.yaml
+      - template: azure/set-up-dot-tiledb.yaml
+      - template: azure/decrypt-cloud-json.yaml
+      - template: azure/check-cloud-json.yaml
       - template: azure/install-dependencies.yaml
       - template: azure/build-and-check.yaml
 
@@ -33,5 +36,8 @@ jobs:
           rm /tmp/R.pkg
         displayName: 'Install R on macOS'
       - template: azure/set-up-library.yaml
+      #- template: azure/set-up-dot-tiledb.yaml
+      #- template: azure/decrypt-cloud-json.yaml
+      #- template: azure/check-cloud-json.yaml
       - template: azure/install-dependencies.yaml
       - template: azure/build-and-check.yaml

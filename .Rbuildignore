@@ -16,3 +16,4 @@ tiledbcloud.*\.tar\.gz
 origREADME.md
 howToBuild.md
 _pkgdown.yml
+^\.ci
