@@ -1,0 +1,3 @@
+steps:
+  - script: Rscript -e 'install.packages(c("jsonlite", "httr", "R6", "base64enc", "tinytest"))'
+    displayName: 'Install dependencies'
