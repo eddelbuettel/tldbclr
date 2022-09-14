@@ -1,0 +1,148 @@
+##' Log in to TileDB Cloud
+##'
+##' This function can be used to override the default setup made at
+##' package load.
+##'
+##' It can operate in two modes. Either a username and a password are
+##' supplied as environment variable \code{TILEDB_REST_USERNAME} and
+##' \code{TILEDB_REST_PASSWORD}.  As an alternative, an access token
+##' can be supplied via \code{TILEDB_REST_TOKEN}.  The values are used
+##' to instantiate a new API client object. If no token was supplied, a
+##' new session is requested and the token assigned to that session is
+##' used.
+##'
+##' Function arguments are optional, and can be used to override the
+##' default configuration values obtained by \code{\link{configure}} from
+##' either the environment variables or the configuration file.
+##'
+##' @param username A character value with the username, if present
+##' password is also needed.
+##'
+##' @param password A character value with the password, if present
+##' username is also needed.
+##'
+##' @param api_key A character value with the access token, it can be
+##' used instead of username and password.
+##'
+##' @param host A character value with remote host to connect to.
+##'
+##' @param remember_me A boolean to select a session with for 24 hours
+##' instead of 8 hours, used only when a new session is requested.
+##'
+##' @param write_config A boolean to write the login information
+##' to \code{~/.tiledb/cloud.json} from where it can be read for
+##' subsequent sessions. This is only done when requested by this
+##' parameter, which is \code{FALSE} by default.
+##'
+##' @return Nothing is returned; the function is called for a side effect
+##' of storing the values in the package environment.
+##'
+##' @family {manual-layer functions}
+##' @export
+login <- function(username, password, api_key, host, remember_me=TRUE, write_config=FALSE) {
+    if (missing(username)) username <- .getConfigValue("username")
+    if (missing(password)) password <- .getConfigValue("password")
+    if (missing(api_key))  api_key  <- .getConfigValue("api_key")
+    if (missing(host))     host     <- .getConfigValue("host")
+
+    verbose <- getOption("verbose", "false")
+
+    good <- api_key != "" || (username != "" && password != "")
+    if (!good) {
+        warning("Need either 'username' + 'password', or 'api_key', ",
+                "to create login session.")
+        return(invisible(NULL))
+    }
+
+    apiClientInstance <- ApiClient$new(
+      basePath=paste(host, "v1", sep="/"),
+      accessToken=api_key,
+      username=username,
+      password=password,
+      retryStatusCodes=c(408, 502, 503, 504)
+    )
+
+    userApiInstance <- UserApi$new(apiClientInstance)
+    userApiInstance$apiClient$apiKeys['X-TILEDB-REST-API-KEY'] <- api_key
+
+    ## If there is not an API token key, request one.
+    if (api_key == "") {
+        ## Request a session ...
+        sess <- userApiInstance$GetSession(remember.me = remember_me)
+
+        ## ... and proceed with the assigned token ...
+        api_key <- sess$token
+        userApiInstance$apiClient$apiKeys['X-TILEDB-REST-API-KEY'] <- api_key
+        ## ... and store it.
+        ## Note that the user can request a sessionless login so we
+        ## check for null here.
+        if (!is.null(api_key)) {
+          .setConfigValue("api_key", api_key)
+        }
+    }
+
+    ## Use as a possible test.
+    resultObject <- userApiInstance$GetUser()
+    # Decode the result
+    body <- .get_raw_response_body_or_stop(resultObject)
+    res <- jsonlite::fromJSON(rawToChar(body))
+
+    if (verbose) cat("GetUser() got name", res$name, "\n")
+
+    ## We do not store username and password, but update.
+    .setConfigValue("username", "")
+    .setConfigValue("password", "")
+    .setConfigValue("logged_in", "TRUE")
+
+    ## Cache API-client and user-API instances
+    .pkgenv[["apiClientInstance"]]  <- apiClientInstance
+    .pkgenv[["userApiInstance"]] <- userApiInstance
+
+    ## Remember default namespace. Set this even if it's NULL -- the fact that
+    ## the user doesn't have a default namespace to charge is itself worth remembering,
+    ## so that error messages in the default-namespacing logic can be more helpful.
+    .pkgenv[["default_namespace_charged"]] <- res[["default_namespace_charged"]]
+
+    if (write_config) {
+      .storeConfig()
+    }
+
+    invisible()
+}
+
+.get_default_namespace_charged <- function() {
+  .pkgenv[["default_namespace_charged"]]
+}
+
+.get_default_namespace_charged_or_stop <- function() {
+  default_namespace <- .get_default_namespace_charged()
+  if (is.null(default_namespace)) {
+    stop("namespace was not provided, and no account-local default was found")
+  }
+  default_namespace
+}
+
+##' Access cached API-client object
+##'
+##' This is a package-internal function.
+##'
+##' It returns the cached \code{\link{ApiClient}} object, or stops. The
+##' \code{ApiClient} instance is constructor input to \code{\link{UserApi}},
+##' \code{\link{ArrayApi}}, etc.  as generated by OpenAPI. Note that
+##' with in the OpenAPI autogen code, there is the \code{ApiClient}
+##' instance which is used as constructor input to \code{UserApi},
+##' \code{ArrayApi}, \code{UdfAPI}, etc.
+##'
+##' @return The cached \code{\link{ApiClient}} object, or stops.
+get_api_client_instance <- function() {
+  apiClientInstance <- .pkgenv[["apiClientInstance"]] # Expected to be set from our login()
+  if (is.null(apiClientInstance)) {
+    stop("tiledbcloud: unable to find login credentials. Please use login().")
+  }
+  apiClientInstance
+}
+
+# This is a convenience function for testing.
+.logged_in <- function() {
+  !is.null(.pkgenv[["apiClientInstance"]])
+}
