@@ -1,21 +1,24 @@
-if ((unitTestToken <- Sys.getenv("TILEDB_REST_UNIT_TEST_TOKEN")) != "") {
-    Sys.setenv("TILEDB_REST_TOKEN"=unitTestToken)
-    Sys.setenv("TILEDB_REST_USERNAME"="")
-    Sys.setenv("TILEDB_REST_PASSWORD"="")
-} else {
-    if (!file.exists("~/.tiledb/cloud.json")) exit_file("No authentication")
-}
+
+Sys.setenv(TILEDB_REST_USERNAME="unittest")
+Sys.setenv(TILEDB_REST_TOKEN=Sys.getenv("TILEDB_REST_TOKEN_UNITTEST"))
 
 library(tiledbcloud)
 library(tinytest)
 
 api <- tiledbcloud:::.pkgenv[["api"]]
 
-res <- api$GetUser()
+userApiInstance <- tiledbcloud:::.pkgenv[["userApiInstance"]]
+res <- userApiInstance$GetSession()
+
+api <- UserApi$new(apiClient=api)
+
+resultObject <- userApiInstance$GetUser()
+body <- tiledbcloud:::.get_raw_response_body_or_stop(resultObject)
+res <- jsonlite::fromJSON(rawToChar(body))
 expect_true(is.list(res))
 expect_true(length(names(res)) >= 13)
 expect_equal(res$is_valid_email, TRUE)
-if (res$email == "aws-mvp@tiledb.io") {
+if ("email" %in% names(res) && res$email == "aws-mvp@tiledb.io") {
     # local environment variable can get in the way while developing
     expect_equal(res$email, "aws-mvp@tiledb.io")
     expect_equal(res$name, "Unit Test")
