@@ -1,16 +1,10 @@
-if ((unitTestToken <- Sys.getenv("TILEDB_REST_UNIT_TEST_TOKEN")) != "") {
-    Sys.setenv("TILEDB_REST_TOKEN"=unitTestToken)
-} else {
-    if (!file.exists("~/.tiledb/cloud.json")) exit_file("No authentication")
-}
 
 library(tiledbcloud)
 library(tinytest)
 
-#api <- tiledbcloud:::.pkgenv[["api"]]
-cl <- tiledbcloud:::.pkgenv[["cl"]]
+api <- tiledbcloud:::.pkgenv[["apiClientInstance"]]
 
-arr <- ArrayApi$new(cl)
+arr <- ArrayApi$new(api)
 expect_true(is(arr, "ArrayApi"))
 
 res <- arr$GetArrayMetadata("TileDB-Inc", "quickstart_dense")

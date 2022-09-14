@@ -2,16 +2,12 @@
 library(tiledbcloud)
 library(tinytest)
 
-api <- tiledbcloud:::.pkgenv[["api"]]
-
 userApiInstance <- tiledbcloud:::.pkgenv[["userApiInstance"]]
-res <- userApiInstance$GetSession()
-
-api <- UserApi$new(apiClient=api)
 
 resultObject <- userApiInstance$GetUser()
 body <- tiledbcloud:::.get_raw_response_body_or_stop(resultObject)
 res <- jsonlite::fromJSON(rawToChar(body))
+
 expect_true(is.list(res))
 expect_true(length(names(res)) >= 13)
 expect_equal(res$is_valid_email, TRUE)
