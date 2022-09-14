@@ -49,9 +49,9 @@
 configure <- function() {
 
     ## Start with environment variables; R returns "" if unset by default
-    token      <- Sys.getenv("TILEDB_REST_TOKEN")
+    token      <- Sys.getenv("TILEDB_REST_TOKEN", Sys.getenv("TILEDB_REST_TOKEN_UNITTEST"))
     host       <- Sys.getenv("TILEDB_REST_HOST", "https://api.tiledb.com")
-    username   <- Sys.getenv("TILEDB_REST_USERNAME")
+    username   <- Sys.getenv("TILEDB_REST_USERNAME", "unittest")
     password   <- Sys.getenv("TILEDB_REST_PASSWORD", "")
     verify_ssl <- TRUE
 
@@ -82,5 +82,6 @@ configure <- function() {
                           host       = host,
                           verify_ssl = verify_ssl,
                           logged_in  = "FALSE")
+    ##print(str(configuration))
     configuration
 }

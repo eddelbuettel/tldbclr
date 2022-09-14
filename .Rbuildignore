@@ -17,3 +17,4 @@ origREADME.md
 howToBuild.md
 _pkgdown.yml
 ^\.ci
+^\.github

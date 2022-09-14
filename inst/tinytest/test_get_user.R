@@ -1,7 +1,4 @@
 
-Sys.setenv(TILEDB_REST_USERNAME="unittest")
-Sys.setenv(TILEDB_REST_TOKEN=Sys.getenv("TILEDB_REST_TOKEN_UNITTEST"))
-
 library(tiledbcloud)
 library(tinytest)
 
