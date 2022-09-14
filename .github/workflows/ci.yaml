@@ -30,7 +30,6 @@ jobs:
           curl -OLs https://eddelbuettel.github.io/r-ci/r2u/run.sh
           chmod 0755 run.sh
           ./run.sh bootstrap
-          sudo Rscript --vanilla -e 'bspm::disable(); install.packages("bspm", repos="https://cran.r-project.org")'
 
       - name: Dependencies
         run: ./run.sh install_all
