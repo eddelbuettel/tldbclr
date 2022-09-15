@@ -9,7 +9,7 @@ on:
 env:
   USE_BSPM: "true"
   TRIM_APT_SOURCES: "true"
-  _R_CHECK_FORCE_SUGGESTS_: "true"
+  _R_CHECK_FORCE_SUGGESTS_: "false"
   TILEDB_REST_TOKEN_UNITTEST: ${{ secrets.TILEDB_REST_TOKEN_UNITTEST }}
   
 jobs:
@@ -32,7 +32,7 @@ jobs:
           ./run.sh bootstrap
 
       - name: Dependencies
-        run: ./run.sh install_all
+        run: ./run.sh install_deps
 
       - name: Test
         run: ./run.sh run_tests

@@ -151,7 +151,6 @@ execute_generic_udf <- function(udf=NULL, registered_udf_name=NULL, args=NULL, r
 ##'
 ##' @return Return value from the UDF.
 ##'
-##' @importFrom arrow read_ipc_stream
 ##' @family {manual-layer functions}
 ##' @export
 execute_array_udf <- function(array, udf=NULL, registered_udf_name=NULL, selectedRanges, attrs=NULL, layout=NULL, args=NULL,

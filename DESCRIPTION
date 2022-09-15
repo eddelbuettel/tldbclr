@@ -11,7 +11,7 @@ URL: https://github.com/TileDB-Inc/TileDB-Cloud-R
 BugReports: https://github.com/TileDB-Inc/TileDB-Cloud-R/issues
 Depends: R (>= 3.3)
 License: MIT + file LICENSE
-Imports: jsonlite, httr, R6, base64enc, arrow, future
-Suggests: tinytest
+Imports: jsonlite, httr, R6, base64enc, future
+Suggests: tinytest, arrow
 RoxygenNote: 7.1.1
 Encoding: UTF-8

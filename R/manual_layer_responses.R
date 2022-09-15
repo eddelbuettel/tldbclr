@@ -150,6 +150,7 @@
       }
     },
     arrow={
+      stopifnot("The 'arrow' package is required." = requireNamespace("arrow", quietly=TRUE))
       decoded_response <- arrow::read_ipc_stream(body)
     },
     stop("Result format unrecognized: ", result_format)
