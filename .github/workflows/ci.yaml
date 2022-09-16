@@ -24,10 +24,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Bootstrap
-        run: ./r-ci.sh bootstrap
+        run: ./.github/r-ci.sh bootstrap
 
       - name: Dependencies
-        run: ./r-ci.sh install_deps
+        run: ./.github/r-ci.sh install_deps
 
       - name: Test
-        run: ./r-ci.sh run_tests
+        run: ./.github/r-ci.sh run_tests
